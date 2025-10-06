@@ -1,9 +1,8 @@
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-import javax.swing.JFrame;
+import javax.swing.*;
+import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public class framePadrao {
-    // CRIANDO INSTANCIAS DOS OBJETOS
+    // CRIANDO CONSTRUTOR
     public framePadrao() {
     JFrame frame = new JFrame("Portal Texas");
     JPanel painel = new JPanel();
@@ -14,8 +13,12 @@ public class framePadrao {
     painel.setSize(800, 600);
     label.setText("Seja muito bem-vindo ao Portal Texas");
 
+
     painel.add(label);
     frame.add(painel);
     frame.setVisible(true);
-}
+    frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+    frame.setLocationRelativeTo(null);
+
+    }
 }
