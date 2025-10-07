@@ -8,13 +8,12 @@ public class connDatabase {
     // ESSA CONEXÃO É APENAS PARA APRENDIZADO E UTILIZAÇÃO DA PRÓPRIA APLICAÇÃO LOCAL.
     // CASO TENTE UTILIZAR TERÁ QUE BAIXAR O SQL SERVER E EXECUTAR sql/database.sql
     // E DEPOIS EXECUTAR AS PROCEDURES
-    private String URL = "jdbc:sqlserver://localhost:1433/UniversidadeTexas";
-    private String user = "sa";
-    private String password = "root";
-
     public connDatabase(){
         try {
-            Connection conn = DriverManager.getConnection(URL,user,password);
+            String password = "root";
+            String user = "sa";
+            String URL = "jdbc:sqlserver://localhost:1433/UniversidadeTexas";
+            Connection conn = DriverManager.getConnection(URL, user, password);
             System.out.println("Conectado com sucesso!");
             conn.close();
         } catch (SQLException e){
