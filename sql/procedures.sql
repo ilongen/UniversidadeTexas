@@ -109,8 +109,7 @@ CREATE OR ALTER PROCEDURE InsertDadosPadrao
 
 
 END;
-
-CREATE OR ALTER PROCEDURE procCadastrarNota
+    CREATE OR ALTER PROCEDURE procCadastrarNota
     (
         @MATRICULA INT,
         @CURSO CHAR(3),
@@ -177,9 +176,7 @@ CREATE OR ALTER PROCEDURE procCadastrarNota
                     IF @BIMESTRE = 4
                         BEGIN
 
-                            DECLARE @RESULTADO VARCHAR(50),
-                                -- @FREQUENCIA FLOAT, NÃO PRECISOU CRIAR ESSA VARIAVEL, APENAS SALVANDO PRA CASO PRECISE SEPARAR A OPERAÇÃO
-                                @MEDIAFINAL FLOAT,
+                            DECLARE
                                 @CARGAHORA INT
 
                             SET @CARGAHORA = (
@@ -194,15 +191,34 @@ CREATE OR ALTER PROCEDURE procCadastrarNota
                                 TOTALFALTAS = @FALTA + F1 + F2 + F3,
                                 MEDIA = (@NOTA + N1 + N2 + N3) / 4
 
-                            UPDATE MATRICULA SET RESULTADO = MEDIA
-                            --@FREQUENCIA = (@CARGAHORA - TOTALFALTAS)*100/@CARGAHORA
+                            --REGRA DE 3 = (QUANTIDADE DE AULAS - QUANTIDADE DE FALTAS)*100/QUANTIDADE DE AULAS
+
                             UPDATE MATRICULA SET PERCFREQ = (@CARGAHORA - TOTALFALTAS)*100/@CARGAHORA
+
+                            SELECT IDMATRICULA,PERCFREQ,MEDIA,
+                                   CASE
+                                       WHEN MEDIA < 7 AND MEDIA > 2.99  THEN 'ESTE ALUNO ESTÁ EM EXAME'
+                                       WHEN MEDIA < 2.99 OR PERCFREQ < 75 THEN 'ESTE ALUNO REPROVOU DIRETAMENTE'
+                                       ELSE 'ESTE ALUNO PASSOU DIRETAMENTE'
+                                       END AS STATUSMATRICULA
+                            FROM MATRICULA
 
                             WHERE IDMATRICULA = @MATRICULA
                               AND SIGLACURSO = @CURSO
                               AND SIGLAMATERIA = @MATERIA
                               AND PERLETIVO = @PERLETIVO;
                         END
+END;
 
-    SELECT * FROM MATRICULA	WHERE IDMATRICULA = @MATRICULA
-END
+--    EXEC procCadastrarNota @MATRICULA = ?, @CURSO = '?', @NOTA = ?, @BIMESTRE = ?, @FALTA = ?, @MATERIA = '?', @PERLETIVO = ?
+
+CREATE OR ALTER PROCEDURE procCadastrarExame(
+    @NOTAEXAME FLOAT,
+    @MATRICULA INT
+)
+AS BEGIN
+   UPDATE MATRICULA
+        SET NOTAEXAME = @NOTAEXAME,
+            MEDIAFINAL = (NOTAEXAME + MEDIA) / 2
+                WHERE IDMATRICULA = @MATRICULA
+END;
