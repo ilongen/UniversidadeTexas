@@ -109,3 +109,100 @@ CREATE OR ALTER PROCEDURE InsertDadosPadrao
 
 
 END;
+
+CREATE OR ALTER PROCEDURE procCadastrarNota
+    (
+        @MATRICULA INT,
+        @CURSO CHAR(3),
+        @MATERIA CHAR(3),
+        @PERLETIVO CHAR(4),
+        @NOTA FLOAT,
+        @FALTA INT,
+        @BIMESTRE INT
+    )
+    AS
+    BEGIN
+
+        IF @BIMESTRE = 1
+            BEGIN
+
+                UPDATE MATRICULA
+                SET N1 = @NOTA,
+                    F1 = @FALTA,
+                    TOTALPONTOS = @NOTA,
+                    TOTALFALTAS = @FALTA,
+                    MEDIA = @NOTA
+                WHERE IDMATRICULA = @MATRICULA
+                  AND SIGLACURSO = @CURSO
+                  AND SIGLAMATERIA = @MATERIA
+                  AND PERLETIVO = @PERLETIVO;
+            END
+
+        ELSE
+
+            IF @BIMESTRE = 2
+                BEGIN
+
+                    UPDATE MATRICULA
+                    SET N2 = @NOTA,
+                        F2 = @FALTA,
+                        TOTALPONTOS = @NOTA + N1,
+                        TOTALFALTAS = @FALTA + F1,
+                        MEDIA = (@NOTA + N1) / 2
+                    WHERE IDMATRICULA = @MATRICULA
+                      AND SIGLACURSO = @CURSO
+                      AND SIGLAMATERIA = @MATERIA
+                      AND PERLETIVO = @PERLETIVO;
+                END
+
+            ELSE
+
+                IF @BIMESTRE = 3
+                    BEGIN
+
+                        UPDATE MATRICULA
+                        SET N3 = @NOTA,
+                            F3 = @FALTA,
+                            TOTALPONTOS = @NOTA + N1 + N2,
+                            TOTALFALTAS = @FALTA + F1 + F2,
+                            MEDIA = (@NOTA + N1 + N2) / 3
+                        WHERE IDMATRICULA = @MATRICULA
+                          AND SIGLACURSO = @CURSO
+                          AND SIGLAMATERIA = @MATERIA
+                          AND PERLETIVO = @PERLETIVO;
+                    END
+
+                ELSE
+
+                    IF @BIMESTRE = 4
+                        BEGIN
+
+                            DECLARE @RESULTADO VARCHAR(50),
+                                -- @FREQUENCIA FLOAT, NÃO PRECISOU CRIAR ESSA VARIAVEL, APENAS SALVANDO PRA CASO PRECISE SEPARAR A OPERAÇÃO
+                                @MEDIAFINAL FLOAT,
+                                @CARGAHORA INT
+
+                            SET @CARGAHORA = (
+                                SELECT CARGAHORARIA FROM MATERIAS
+                                WHERE       SIGLAMATERIA = @MATERIA
+                                  AND SIGLACURSO = @CURSO)
+
+                            UPDATE MATRICULA
+                            SET N4 = @NOTA,
+                                F4 = @FALTA,
+                                TOTALPONTOS = @NOTA + N1 + N2 + N3,
+                                TOTALFALTAS = @FALTA + F1 + F2 + F3,
+                                MEDIA = (@NOTA + N1 + N2 + N3) / 4
+
+                            UPDATE MATRICULA SET RESULTADO = MEDIA
+                            --@FREQUENCIA = (@CARGAHORA - TOTALFALTAS)*100/@CARGAHORA
+                            UPDATE MATRICULA SET PERCFREQ = (@CARGAHORA - TOTALFALTAS)*100/@CARGAHORA
+
+                            WHERE IDMATRICULA = @MATRICULA
+                              AND SIGLACURSO = @CURSO
+                              AND SIGLAMATERIA = @MATERIA
+                              AND PERLETIVO = @PERLETIVO;
+                        END
+
+    SELECT * FROM MATRICULA	WHERE IDMATRICULA = @MATRICULA
+END
