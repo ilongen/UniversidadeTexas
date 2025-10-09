@@ -1,5 +1,5 @@
-import models.connDatabase;
+import models.connectionDB;
 void main() {
-    new connDatabase();
+    new connectionDB();
 }
 
