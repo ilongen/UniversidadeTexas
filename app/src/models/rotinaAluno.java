@@ -15,14 +15,12 @@ public class rotinaAluno {
     }
 
     public String sqlProcedure(connectionDB conn) {
-        String sql = "EXEC RotinaAluno";
+
+        String sql = "EXEC RotinaAluno @NOME = " + this.nome;
+
         return null;
     }
 
-    public String getNome() {
-        return nome;
-    }
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
+    public String getNome() {return nome;}
+    public void setNome(String nome) {this.nome = nome;}
 }
