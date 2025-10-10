@@ -1,8 +1,8 @@
-import models.rotinaAluno;
-import models.connectionDB;
+import models.procRotinaAluno;
+
 import java.sql.SQLException;
 
-void main() throws SQLException {
-    new connectionDB();
+void main(){
+    System.out.println(new procRotinaAluno("Testinho","EDS",2));
 }
 
