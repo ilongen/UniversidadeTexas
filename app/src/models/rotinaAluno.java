@@ -1,26 +1,31 @@
 package models;
 
 // TODO
-// CRIAR A EXECUÇÃO DA PROCEDURE AQUI DENTRO DO JAVA,
-// CRIAR VARIAVEIS QUE RECEBE DADOS E ENCAMINHE PARA O BANCO DE DADOS DIRETO.
+// AINDA FAZENDO, NÃO CONSEGUI FINALIZAR PORQUE NÃO ESTOU SABENDO LIDAR COM STMT
+// PRECISO LIDAR COM DUAS CLASSES ONDE UMA CLASSE SÓ FAZ CONEXÃO DO BANCO
+// ESSA CLASSE EU QUERO QUE FICA RESPONSÁVEL POR TUDO DA PROCEDURE/DADOS QUE ELA IRÁ RECEBER
+
+
+
 
 public class rotinaAluno {
     private String nome;
-    private String matricula;
+    connectionDB conn = new connectionDB();
 
-    public rotinaAluno(String nome, String matricula) {
-        this.nome = nome;
-        this.matricula = matricula;
-        connectionDB conn = new connectionDB();
+    public rotinaAluno(String nome){
+        setNome(nome);
+        nome = getNome();
+        sqlProcedure(nome);
     }
 
-    public String sqlProcedure(connectionDB conn) {
-
-        String sql = "EXEC RotinaAluno @NOME = " + this.nome;
-
-        return null;
+    public void sqlProcedure(String nome){
+        try{
+            String sql = "EXEC rotinaAluno @NOME = ?";
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 
-    public String getNome() {return nome;}
+    public String getNome() {return this.nome;}
     public void setNome(String nome) {this.nome = nome;}
 }

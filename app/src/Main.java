@@ -1,5 +1,8 @@
+import models.rotinaAluno;
 import models.connectionDB;
-void main() {
+import java.sql.SQLException;
+
+void main() throws SQLException {
     new connectionDB();
 }
 
